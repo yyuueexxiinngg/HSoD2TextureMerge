@@ -19,7 +19,7 @@ namespace HSoD2TextureMerge
         public MainForm()
         {
             InitializeComponent();
-            richTextBox_Console.AppendText("Created By yyuueexxiinngg / By 西城飘雪 : https://www.mihoyo.tech " +
+            richTextBox_Console.AppendText("Created By yyuueexxiinngg  : https://github.com/yyuueexxiinngg/HSoD2TextureMerge    / By 西城飘雪 : https://www.mihoyo.tech  " +
                 "\nPlease select the folder contains all textures and make sure ***_Alpha.*** is in the same name and same folder as RGB image. " +
                 "\nPlease notice that the program currently using single thread to proceed images, witch means process would be slow." +
                 "\nMuiltiple threads processing might be available for later version~" +
