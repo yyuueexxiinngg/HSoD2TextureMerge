@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PreviewForm));
             this.btn_preview = new System.Windows.Forms.Button();
             this.pictureBox_mergeResult = new System.Windows.Forms.PictureBox();
             this.btn_Merge = new System.Windows.Forms.Button();
@@ -139,6 +140,7 @@
             this.Controls.Add(this.btn_OpenAlphaImage);
             this.Controls.Add(this.btn_OpenRGBImage);
             this.Controls.Add(this.pictureBox_RGB);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "PreviewForm";
             this.Text = "PreviewForm";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_mergeResult)).EndInit();

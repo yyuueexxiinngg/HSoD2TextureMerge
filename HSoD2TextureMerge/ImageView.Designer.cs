@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ImageView));
             this.pictureBox_image = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_image)).BeginInit();
             this.SuspendLayout();
@@ -49,6 +50,7 @@
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(120, 0);
             this.Controls.Add(this.pictureBox_image);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ImageView";
             this.Text = "ImageView";
             this.Load += new System.EventHandler(this.ImageView_Load);
