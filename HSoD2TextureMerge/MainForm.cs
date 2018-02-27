@@ -130,7 +130,7 @@ namespace HSoD2TextureMerge
 
                 if(saveFolderPath != "")
                 {
-                    DateTime beforDT = System.DateTime.Now;
+                    DateTime beforDT = DateTime.Now;
                     fileMap = new Dictionary<string, string>();
                     getFile(folderPath, fileMap);
 
@@ -163,8 +163,7 @@ namespace HSoD2TextureMerge
 
                                     count++;
 
-                                    Console.WriteLine(kvp.Key + " proceed  Remain file(s): " + (fileMap.Keys.Count - count - errorList.Count));
-                                    richTextBox_Console.AppendText("\n" + kvp.Key + " proceed  Remain file(s): " + (fileMap.Keys.Count - count - errorList.Count));
+                                    richTextBox_Console.AppendText("\n" + kvp.Key + " proceeded  Remain file(s): " + (fileMap.Keys.Count - count - errorList.Count));
                                     richTextBox_Console_Foucus();
 
                                 }
@@ -177,8 +176,7 @@ namespace HSoD2TextureMerge
                             else
                             {
                                 errorList.Add(kvp.Key);
-                                Console.WriteLine(kvp.Key + " : Can not find Alpha texture for it. Pleas make sure name the Alpha file as Example_Alpha.png");
-                                richTextBox_Console.AppendText("\n" + kvp.Key + " : Can not find Alpha texture for it.");
+                                richTextBox_Console.AppendText("\n" + kvp.Key + " Skipped : Can not find Alpha texture for it.");
                                 richTextBox_Console_Foucus();
                             }//if end
                         }   //foreach end
@@ -190,7 +188,7 @@ namespace HSoD2TextureMerge
                     finally
                     {
                         Console.WriteLine("Total files : " + fileMap.Keys.Count + "    " + count + " file(s) are proceed , " + errorList.Count + " file(s) are skiped.");
-                        richTextBox_Console.AppendText("\nTotal files : " + fileMap.Keys.Count + "    " + count + " file(s) are proceed , " + errorList.Count + " file(s) are skiped.  ");
+                        richTextBox_Console.AppendText("\nTotal files : " + fileMap.Keys.Count + "    " + count + " file(s) were proceeded , " + errorList.Count + " file(s) are skipped.  ");
                         richTextBox_Console_Foucus();
                     }
 
