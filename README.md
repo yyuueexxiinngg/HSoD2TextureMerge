@@ -14,7 +14,7 @@ A tool to merge RGB image with another Alpha channel image into one RGBA transpr
  * Multi-Thread support
  * Many RGB images sharing the same stucture that using the same Alpha channel image
  * Autosize Alpha images to fit RGB images
- * Better algorithm............
+ ~~* Better algorithm............~~ Now using pointer instead of GetPixel() and SetPixel()
  * Unity bundle support...................
  
 ## Notice
