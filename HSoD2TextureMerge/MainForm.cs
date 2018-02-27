@@ -11,10 +11,10 @@ namespace HSoD2TextureMerge
     public partial class MainForm : Form
     {
         String folderPath = "";
-        Bitmap rgbTexture;
-        Bitmap alphaTexture;
-        Bitmap textureWithAlpha;
-        List<string> errorList;
+
+
+        Dictionary<string,string> errorListMap;
+        List<FileInfo> copyList;
         Dictionary<string, string> fileMap;
 
         public MainForm()
@@ -41,8 +41,19 @@ namespace HSoD2TextureMerge
                 {
                     if (file.FullName.IndexOf("Alpha") == -1)
                     {
-                        string[] split = file.FullName.Split('.');
-                        fileMap.Add(file.FullName, split[split.Length - 2] + "_Alpha.png");
+                        string fileExtension = file.Extension;
+                        if (String.Equals(fileExtension, ".png", StringComparison.CurrentCultureIgnoreCase) || String.Equals(fileExtension, ".jpg", StringComparison.CurrentCultureIgnoreCase) || String.Equals(fileExtension, ".bmp", StringComparison.CurrentCultureIgnoreCase))
+                        {
+                            string alphaPath = file.FullName.Replace(fileExtension, "") + "_Alpha" + fileExtension;
+
+                            if (File.Exists(alphaPath))
+                            {
+                                fileMap.Add(file.FullName, alphaPath);
+                            }else
+                            {
+                                copyList.Add(file);
+                            }   //if end
+                        }   //if end
                     }   //if end
                 }   //foreach end
 
@@ -54,7 +65,7 @@ namespace HSoD2TextureMerge
             }
             catch
             {
-
+                
             }   //try catch end
         }   //getFile()
 
@@ -62,11 +73,10 @@ namespace HSoD2TextureMerge
         {
             int width = rgbTexture.Width;
             int height = rgbTexture.Height;
-            textureWithAlpha = rgbTexture;
 
             try
             {
-                BitmapData textureWithAlphaData = textureWithAlpha.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
+                BitmapData textureWithAlphaData = rgbTexture.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
                 BitmapData alphaTextureData = alphaTexture.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
 
                 byte* resultP = (byte*)textureWithAlphaData.Scan0;
@@ -87,16 +97,78 @@ namespace HSoD2TextureMerge
                     alphaP += alphaOffset;
                 }
 
-                textureWithAlpha.UnlockBits(textureWithAlphaData);
+                rgbTexture.UnlockBits(textureWithAlphaData);
                 alphaTexture.UnlockBits(alphaTextureData);
 
-                return textureWithAlpha;
+                return rgbTexture;
             }
             catch
             {
-                return textureWithAlpha;
+                return rgbTexture;
             }
         }   //mergeImage()
+
+        private void copyFiles(FileInfo sourceFile,string destFolder, string destFileName)
+        {
+            if(File.Exists(destFolder + destFileName)){
+                copyFiles(sourceFile, destFolder, destFileName.Replace(sourceFile.Extension, "R") + sourceFile.Extension);
+            }
+            else
+            {
+                File.Copy(sourceFile.FullName, destFolder + destFileName);
+            }
+        }
+
+        private void errorFileProcessing()
+        {
+            DialogResult dr = MessageBox.Show("There were also images that unable to proceed (might because reslution mismatch), do you want to copy them to a new folder?", "Copy Files?", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+            if (dr == DialogResult.OK)
+            {
+                folderBrowserDialog2_unmatched.ShowDialog();
+                if (folderBrowserDialog2_unmatched.SelectedPath != "")
+                {
+                    foreach (KeyValuePair<string, string> kvp in errorListMap)
+                    {
+                        try
+                        {
+                            string[] split = kvp.Key.Split('\\');
+                            string[] alphaSplit = kvp.Value.Split('\\');
+                            File.Copy(kvp.Key, folderBrowserDialog2_unmatched.SelectedPath + "\\" + split[split.Length - 1]);
+                            File.Copy(kvp.Value, folderBrowserDialog2_unmatched.SelectedPath + "\\" + alphaSplit[split.Length - 1]);
+                            richTextBox_Console.AppendText("\n" + kvp.Key + "  Copied");
+                            richTextBox_Console_Foucus();
+                        }
+                        catch(Exception ex)
+                        {
+                            richTextBox_Console.AppendText("\n" + kvp.Key + "  copying failed. " + ex.Message);
+                            richTextBox_Console_Foucus();
+                        }
+                    }
+                }
+                
+            }
+        }
+
+        private void unmatchedFileProcessing()
+        {
+            DialogResult dr = MessageBox.Show("There were images that did not find matched Alpha textures, do you want to copy them to a new folder?", "Copy Files?", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+            if (dr == DialogResult.OK)
+            {
+                folderBrowserDialog2_unmatched.ShowDialog();
+                if(folderBrowserDialog2_unmatched.SelectedPath != "")
+                {
+                    foreach (FileInfo file in copyList){
+                        if (file.Exists)
+                        {
+                            copyFiles(file, folderBrowserDialog2_unmatched.SelectedPath + "\\", file.Name);
+                            richTextBox_Console.AppendText("\n" + file.FullName + "  Copied");
+                            richTextBox_Console_Foucus();
+                        }
+                    }
+                    folderBrowserDialog2_unmatched.SelectedPath = "";
+                }   //if end
+            }   //if end
+        }   //unmatchedFileProcessing()
 
         private void richTextBox_Console_Foucus()
         {
@@ -132,10 +204,13 @@ namespace HSoD2TextureMerge
                 {
                     DateTime beforDT = DateTime.Now;
                     fileMap = new Dictionary<string, string>();
+                    copyList = new List<FileInfo>();
+                    errorListMap = new Dictionary<string, string>();
+
                     getFile(folderPath, fileMap);
 
                     int count = 0;
-                    errorList = new List<string>();
+                    
 
                     try
                     {
@@ -145,8 +220,8 @@ namespace HSoD2TextureMerge
                             {
                                 try
                                 {
-                                    rgbTexture = new Bitmap(kvp.Key);
-                                    alphaTexture = new Bitmap(kvp.Value);
+                                    Bitmap rgbTexture = new Bitmap(kvp.Key);
+                                    Bitmap alphaTexture = new Bitmap(kvp.Value);
 
                                     string saveName = kvp.Key.Replace(folderPath, "");   //To get the path with subfolder for each image
 
@@ -157,26 +232,31 @@ namespace HSoD2TextureMerge
                                         Directory.CreateDirectory(saveFolderPath + Regex.Match(saveName, pattern));
                                     }
 
-
-                                    textureWithAlpha = new Bitmap(mergeImage(rgbTexture, alphaTexture));
+                                    Bitmap textureWithAlpha = new Bitmap(mergeImage(rgbTexture, alphaTexture));
                                     textureWithAlpha.Save(saveFolderPath + saveName, ImageFormat.Png);
 
                                     count++;
 
-                                    richTextBox_Console.AppendText("\n" + kvp.Key + " proceeded  Remain file(s): " + (fileMap.Keys.Count - count - errorList.Count));
+                                    richTextBox_Console.AppendText("\n" + kvp.Key + " proceeded  Remain file(s): " + (fileMap.Keys.Count - count - errorListMap.Count));
                                     richTextBox_Console_Foucus();
+
+                                    rgbTexture.Dispose();
+                                    alphaTexture.Dispose();
+                                    textureWithAlpha.Dispose();
 
                                 }
                                 catch (Exception ex)
                                 {
                                     Console.WriteLine(kvp.Key + " :" + ex.Message);
-                                    errorList.Add(kvp.Key);
+                                    errorListMap.Add(kvp.Key,kvp.Value);
+                                    richTextBox_Console.AppendText("\n" + kvp.Key + " :" + ex.Message);
+                                    richTextBox_Console_Foucus();
                                 }
                             }
                             else
                             {
-                                errorList.Add(kvp.Key);
-                                richTextBox_Console.AppendText("\n" + kvp.Key + " Skipped : Can not find Alpha texture for it.");
+                                errorListMap.Add(kvp.Key, kvp.Value);
+                                richTextBox_Console.AppendText("\n" + kvp.Value + " Skipped : Can not find Alpha texture for it.");
                                 richTextBox_Console_Foucus();
                             }//if end
                         }   //foreach end
@@ -187,8 +267,8 @@ namespace HSoD2TextureMerge
                     }
                     finally
                     {
-                        Console.WriteLine("Total files : " + fileMap.Keys.Count + "    " + count + " file(s) are proceed , " + errorList.Count + " file(s) are skiped.");
-                        richTextBox_Console.AppendText("\nTotal files : " + fileMap.Keys.Count + "    " + count + " file(s) were proceeded , " + errorList.Count + " file(s) are skipped.  ");
+                        Console.WriteLine("Total files : " + fileMap.Keys.Count + "    " + count + " file(s) are proceed , " + errorListMap.Count + " file(s) are skiped.");
+                        richTextBox_Console.AppendText("\nTotal files : " + fileMap.Keys.Count + "    " + count + " file(s) were proceeded , " + errorListMap.Count + " file(s) are skipped.  ");
                         richTextBox_Console_Foucus();
                     }
 
@@ -196,6 +276,16 @@ namespace HSoD2TextureMerge
                     TimeSpan ts = afterDT.Subtract(beforDT);
                     richTextBox_Console.AppendText("Time:" + ts.TotalSeconds + " s\n");
                     richTextBox_Console_Foucus();
+
+                    if (copyList.Count > 0)
+                    {
+                        unmatchedFileProcessing();
+                    }
+
+                    if(errorListMap.Count > 0)
+                    {
+                        errorFileProcessing();
+                    }
                 }   //internal if end
             }
             else

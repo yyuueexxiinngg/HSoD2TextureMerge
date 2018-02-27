@@ -35,6 +35,7 @@
             this.folderBrowserDialog_Save = new System.Windows.Forms.FolderBrowserDialog();
             this.btn_Preview = new System.Windows.Forms.Button();
             this.richTextBox_Console = new System.Windows.Forms.RichTextBox();
+            this.folderBrowserDialog2_unmatched = new System.Windows.Forms.FolderBrowserDialog();
             this.SuspendLayout();
             // 
             // btn_FolderSelect
@@ -85,6 +86,10 @@
             this.richTextBox_Console.Text = "";
             this.richTextBox_Console.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.richTextBox_Console_LinkClicked);
             // 
+            // folderBrowserDialog2_unmatched
+            // 
+            this.folderBrowserDialog2_unmatched.Description = "Please select a folder to store unmatched file(s)";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -97,7 +102,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
-            this.Text = "HSoD2 Texture Merge";
+            this.Text = "HSoD2 Texture Merge V1.1";
             this.ResumeLayout(false);
 
         }
@@ -109,6 +114,7 @@
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog_Save;
         private System.Windows.Forms.Button btn_Preview;
         private System.Windows.Forms.RichTextBox richTextBox_Console;
+        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog2_unmatched;
     }
 }
 
