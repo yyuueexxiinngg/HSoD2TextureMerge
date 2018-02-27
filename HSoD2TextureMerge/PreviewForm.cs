@@ -10,7 +10,6 @@ namespace HSoD2TextureMerge
         String alphaPath = "";
         Bitmap rgbTexture;
         Bitmap alphaTexture;
-        Bitmap textureWithAlpha;
 
         public PreviewForm()
         {
@@ -51,22 +50,14 @@ namespace HSoD2TextureMerge
 
         private void btn_Merge_Click(object sender, EventArgs e)
         {
-            if (rgbPath != "" && alphaPath != "")
+            MainForm m = new MainForm();
+
+            DateTime beforDT = System.DateTime.Now;
+            if (rgbTexture != null && alphaTexture != null)
             {
                 try
                 {
-                    textureWithAlpha = new Bitmap(rgbTexture.Width, rgbTexture.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-
-                    for (int i = 0; i < rgbTexture.Width; i++)
-                    {
-                        for (int j = 0; j < rgbTexture.Height; j++)
-                        {
-                            Color withAlpha = Color.FromArgb(alphaTexture.GetPixel(i, j).R, rgbTexture.GetPixel(i, j));
-
-                            textureWithAlpha.SetPixel(i, j, withAlpha);
-                        }
-                    }   //for end
-                    pictureBox_mergeResult.Image = textureWithAlpha;
+                    pictureBox_mergeResult.Image = m.mergeImage(rgbTexture, alphaTexture);
 
                     btn_preview.Enabled = true;
                     btn_SaveReasult.Enabled = true;
@@ -80,12 +71,16 @@ namespace HSoD2TextureMerge
             {
                 MessageBox.Show("Please open both RGB and Alpha images first");
             }   //if end
+
+            DateTime afterDT = System.DateTime.Now;
+            TimeSpan ts = afterDT.Subtract(beforDT);
+            richTextBox_ProcessTime.Text = "Time:" + ts.TotalSeconds + " s";
         }
 
         private void btn_preview_Click(object sender, EventArgs e)
         {
             this.Enabled = false;
-            ImageView imageView = new ImageView(textureWithAlpha);
+            ImageView imageView = new ImageView(pictureBox_mergeResult.Image);
             imageView.ShowDialog();
             this.Enabled = true;
         }
@@ -98,7 +93,7 @@ namespace HSoD2TextureMerge
 
             Console.WriteLine(folderBrowserDialog1.SelectedPath);
 
-            textureWithAlpha.Save(folderBrowserDialog1.SelectedPath + "\\" + fileName, System.Drawing.Imaging.ImageFormat.Png);
+            pictureBox_mergeResult.Image.Save(folderBrowserDialog1.SelectedPath + "\\" + fileName, System.Drawing.Imaging.ImageFormat.Png);
         }
     }
 }

@@ -39,6 +39,7 @@
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.btn_SaveReasult = new System.Windows.Forms.Button();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+            this.richTextBox_ProcessTime = new System.Windows.Forms.RichTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_mergeResult)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Alpha)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_RGB)).BeginInit();
@@ -127,11 +128,23 @@
             this.btn_SaveReasult.UseVisualStyleBackColor = true;
             this.btn_SaveReasult.Click += new System.EventHandler(this.btn_SaveReasult_Click);
             // 
+            // richTextBox_ProcessTime
+            // 
+            this.richTextBox_ProcessTime.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.richTextBox_ProcessTime.ForeColor = System.Drawing.Color.Red;
+            this.richTextBox_ProcessTime.Location = new System.Drawing.Point(1139, 510);
+            this.richTextBox_ProcessTime.Name = "richTextBox_ProcessTime";
+            this.richTextBox_ProcessTime.ReadOnly = true;
+            this.richTextBox_ProcessTime.Size = new System.Drawing.Size(298, 58);
+            this.richTextBox_ProcessTime.TabIndex = 15;
+            this.richTextBox_ProcessTime.Text = "Process time would goes here";
+            // 
             // PreviewForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1449, 579);
+            this.Controls.Add(this.richTextBox_ProcessTime);
             this.Controls.Add(this.btn_SaveReasult);
             this.Controls.Add(this.btn_preview);
             this.Controls.Add(this.pictureBox_mergeResult);
@@ -142,7 +155,7 @@
             this.Controls.Add(this.pictureBox_RGB);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "PreviewForm";
-            this.Text = "PreviewForm";
+            this.Text = "Preview and Singel Output";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_mergeResult)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Alpha)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_RGB)).EndInit();
@@ -162,5 +175,6 @@
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.Button btn_SaveReasult;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
+        private System.Windows.Forms.RichTextBox richTextBox_ProcessTime;
     }
 }

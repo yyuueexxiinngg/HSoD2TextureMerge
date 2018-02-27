@@ -52,8 +52,7 @@
             this.Controls.Add(this.pictureBox_image);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ImageView";
-            this.Text = "ImageView";
-            this.Load += new System.EventHandler(this.ImageView_Load);
+            this.Text = "Preview";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_image)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

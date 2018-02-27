@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -55,30 +56,54 @@ namespace HSoD2TextureMerge
             {
 
             }   //try catch end
-        }   //getFile
+        }   //getFile()
 
-        private Bitmap mergeImage(Bitmap rgbTexture,Bitmap alphaTexture)
+        public unsafe Bitmap mergeImage(Bitmap rgbTexture,Bitmap alphaTexture)
         {
-            textureWithAlpha = new Bitmap(rgbTexture.Width, rgbTexture.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            int width = rgbTexture.Width;
+            int height = rgbTexture.Height;
+            textureWithAlpha = rgbTexture;
+
             try
             {
-                for (int i = 0; i < rgbTexture.Width; i++)
+                BitmapData textureWithAlphaData = textureWithAlpha.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
+                BitmapData alphaTextureData = alphaTexture.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
+
+                byte* resultP = (byte*)textureWithAlphaData.Scan0;
+                byte* alphaP = (byte*)alphaTextureData.Scan0;
+
+                int resultOffset = textureWithAlphaData.Stride - width * 4;
+                int alphaOffset = textureWithAlphaData.Stride - width * 4;
+
+                for (int j = 0; j < height; j++)
                 {
-                    for (int j = 0; j < rgbTexture.Height; j++)
+                    for (int i = 0; i < width; i++)
                     {
-                        Color withAlpha = Color.FromArgb(alphaTexture.GetPixel(i, j).R, rgbTexture.GetPixel(i, j));
-                        textureWithAlpha.SetPixel(i, j, withAlpha);
+                        resultP[3] = alphaP[2];
+                        resultP += 4;
+                        alphaP += 4;
                     }
-                }   //for end
+                    resultP += resultOffset;
+                    alphaP += alphaOffset;
+                }
+
+                textureWithAlpha.UnlockBits(textureWithAlphaData);
+                alphaTexture.UnlockBits(alphaTextureData);
 
                 return textureWithAlpha;
-
             }
             catch
             {
                 return textureWithAlpha;
             }
-        }   //mergeImage
+        }   //mergeImage()
+
+        private void richTextBox_Console_Foucus()
+        {
+            richTextBox_Console.SelectionStart = richTextBox_Console.TextLength;
+            richTextBox_Console.SelectionLength = 0;
+            richTextBox_Console.Focus();
+        }   //richTextBox_Console_Foucus()
 
         private void btn_FolderSelect_Click(object sender, EventArgs e)
         {
@@ -91,14 +116,12 @@ namespace HSoD2TextureMerge
             {
                 MessageBox.Show("Unable to open the folder");
             }
-        }   //FolderSelect_Click
+        }   //FolderSelect_Click()
 
         
 
         private void btn_Process_Click(object sender, EventArgs e)
         {
-            
-
             if (folderPath != "")
             {
                 string saveFolderPath = "";
@@ -107,6 +130,7 @@ namespace HSoD2TextureMerge
 
                 if(saveFolderPath != "")
                 {
+                    DateTime beforDT = System.DateTime.Now;
                     fileMap = new Dictionary<string, string>();
                     getFile(folderPath, fileMap);
 
@@ -135,11 +159,14 @@ namespace HSoD2TextureMerge
 
 
                                     textureWithAlpha = new Bitmap(mergeImage(rgbTexture, alphaTexture));
-                                    textureWithAlpha.Save(saveFolderPath + saveName, System.Drawing.Imaging.ImageFormat.Png);
+                                    textureWithAlpha.Save(saveFolderPath + saveName, ImageFormat.Png);
 
                                     count++;
 
                                     Console.WriteLine(kvp.Key + " proceed  Remain file(s): " + (fileMap.Keys.Count - count - errorList.Count));
+                                    richTextBox_Console.AppendText("\n" + kvp.Key + " proceed  Remain file(s): " + (fileMap.Keys.Count - count - errorList.Count));
+                                    richTextBox_Console_Foucus();
+
                                 }
                                 catch (Exception ex)
                                 {
@@ -151,6 +178,8 @@ namespace HSoD2TextureMerge
                             {
                                 errorList.Add(kvp.Key);
                                 Console.WriteLine(kvp.Key + " : Can not find Alpha texture for it. Pleas make sure name the Alpha file as Example_Alpha.png");
+                                richTextBox_Console.AppendText("\n" + kvp.Key + " : Can not find Alpha texture for it.");
+                                richTextBox_Console_Foucus();
                             }//if end
                         }   //foreach end
                     }
@@ -161,16 +190,21 @@ namespace HSoD2TextureMerge
                     finally
                     {
                         Console.WriteLine("Total files : " + fileMap.Keys.Count + "    " + count + " file(s) are proceed , " + errorList.Count + " file(s) are skiped.");
+                        richTextBox_Console.AppendText("\nTotal files : " + fileMap.Keys.Count + "    " + count + " file(s) are proceed , " + errorList.Count + " file(s) are skiped.  ");
+                        richTextBox_Console_Foucus();
                     }
-                }   //if end
 
-                
+                    DateTime afterDT = System.DateTime.Now;
+                    TimeSpan ts = afterDT.Subtract(beforDT);
+                    richTextBox_Console.AppendText("Time:" + ts.TotalSeconds + " s\n");
+                    richTextBox_Console_Foucus();
+                }   //internal if end
             }
             else
             {
                 MessageBox.Show("令人窒息的操作顺序 我不会怪你的.....");
             }   //if end
-        }   //Process_Click
+        }   //Process_Click()
 
         private void btn_Preview_Click(object sender, EventArgs e)
         {
@@ -178,11 +212,11 @@ namespace HSoD2TextureMerge
             PreviewForm preView = new PreviewForm();
             preView.ShowDialog();
             this.Enabled = true;
-        }
+        }   //btn_Preview_Click()
 
         private void richTextBox_Console_LinkClicked(object sender, LinkClickedEventArgs e)
         {
             System.Diagnostics.Process.Start(e.LinkText);
-        }
-    }
-}
+        }   //richTextBox_Console_LinkClicked()
+    }   //Class MainForm
+}   //Namespace
