@@ -82,9 +82,6 @@ namespace HSoD2TextureMerge
                 byte* resultP = (byte*)textureWithAlphaData.Scan0;
                 byte* alphaP = (byte*)alphaTextureData.Scan0;
 
-                int resultOffset = textureWithAlphaData.Stride - width * 4;
-                int alphaOffset = textureWithAlphaData.Stride - width * 4;
-
                 for (int j = 0; j < height; j++)
                 {
                     for (int i = 0; i < width; i++)
@@ -93,8 +90,6 @@ namespace HSoD2TextureMerge
                         resultP += 4;
                         alphaP += 4;
                     }
-                    resultP += resultOffset;
-                    alphaP += alphaOffset;
                 }
 
                 rgbTexture.UnlockBits(textureWithAlphaData);
@@ -247,7 +242,7 @@ namespace HSoD2TextureMerge
                                 }
                                 catch (Exception ex)
                                 {
-                                    Console.WriteLine(kvp.Key + " :" + ex.Message);
+                                    Console.WriteLine(kvp.Key + " :" + ex.Message + "  Please make sure Alpha texture sharing the same resolution as RGB's");
                                     errorListMap.Add(kvp.Key,kvp.Value);
                                     richTextBox_Console.AppendText("\n" + kvp.Key + " :" + ex.Message);
                                     richTextBox_Console_Foucus();
