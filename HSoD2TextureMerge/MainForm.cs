@@ -227,18 +227,29 @@ namespace HSoD2TextureMerge
                                         Directory.CreateDirectory(saveFolderPath + Regex.Match(saveName, pattern));
                                     }
 
-                                    Bitmap textureWithAlpha = new Bitmap(mergeImage(rgbTexture, alphaTexture));
-                                    textureWithAlpha.Save(saveFolderPath + saveName, ImageFormat.Png);
 
-                                    count++;
+                                    if(rgbTexture.Width == alphaTexture.Width && rgbTexture.Height == alphaTexture.Height)
+                                    {
+                                        Bitmap textureWithAlpha = new Bitmap(mergeImage(rgbTexture, alphaTexture));
+                                        textureWithAlpha.Save(saveFolderPath + saveName, ImageFormat.Png);
 
-                                    richTextBox_Console.AppendText("\n" + kvp.Key + " proceeded  Remain file(s): " + (fileMap.Keys.Count - count - errorListMap.Count));
-                                    richTextBox_Console_Foucus();
+                                        count++;
+
+                                        richTextBox_Console.AppendText("\n" + kvp.Key + " proceeded  Remain file(s): " + (fileMap.Keys.Count - count - errorListMap.Count));
+                                        richTextBox_Console_Foucus();
+
+                                        
+                                        textureWithAlpha.Dispose();
+                                    }
+                                    else
+                                    {
+                                        errorListMap.Add(kvp.Key, kvp.Value);
+                                        richTextBox_Console.AppendText("\n" + kvp.Key + " :" + " Resoluiton check failed please make sure Alpha texture sharing the same resolution as RGB's ");
+                                        richTextBox_Console_Foucus();
+                                    }
 
                                     rgbTexture.Dispose();
                                     alphaTexture.Dispose();
-                                    textureWithAlpha.Dispose();
-
                                 }
                                 catch (Exception ex)
                                 {
