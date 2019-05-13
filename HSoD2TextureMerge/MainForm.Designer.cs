@@ -36,15 +36,18 @@
             this.btn_Preview = new System.Windows.Forms.Button();
             this.richTextBox_Console = new System.Windows.Forms.RichTextBox();
             this.folderBrowserDialog2_unmatched = new System.Windows.Forms.FolderBrowserDialog();
+            this.openSampleFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.textBox_Suffix = new System.Windows.Forms.TextBox();
+            this.label_Suffix = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btn_FolderSelect
             // 
             this.btn_FolderSelect.Location = new System.Drawing.Point(131, 214);
             this.btn_FolderSelect.Name = "btn_FolderSelect";
-            this.btn_FolderSelect.Size = new System.Drawing.Size(202, 58);
+            this.btn_FolderSelect.Size = new System.Drawing.Size(118, 58);
             this.btn_FolderSelect.TabIndex = 7;
-            this.btn_FolderSelect.Text = "Select a Folder";
+            this.btn_FolderSelect.Text = "Select Res Folder";
             this.btn_FolderSelect.UseVisualStyleBackColor = true;
             this.btn_FolderSelect.Click += new System.EventHandler(this.btn_FolderSelect_Click);
             // 
@@ -54,11 +57,12 @@
             // 
             // btn_Process
             // 
-            this.btn_Process.Location = new System.Drawing.Point(375, 214);
+            this.btn_Process.Enabled = false;
+            this.btn_Process.Location = new System.Drawing.Point(426, 214);
             this.btn_Process.Name = "btn_Process";
-            this.btn_Process.Size = new System.Drawing.Size(202, 58);
+            this.btn_Process.Size = new System.Drawing.Size(131, 58);
             this.btn_Process.TabIndex = 8;
-            this.btn_Process.Text = "Proceed";
+            this.btn_Process.Text = "Start Merge";
             this.btn_Process.UseVisualStyleBackColor = true;
             this.btn_Process.Click += new System.EventHandler(this.btn_Process_Click);
             // 
@@ -68,11 +72,11 @@
             // 
             // btn_Preview
             // 
-            this.btn_Preview.Location = new System.Drawing.Point(617, 214);
+            this.btn_Preview.Location = new System.Drawing.Point(590, 214);
             this.btn_Preview.Name = "btn_Preview";
-            this.btn_Preview.Size = new System.Drawing.Size(202, 58);
+            this.btn_Preview.Size = new System.Drawing.Size(229, 58);
             this.btn_Preview.TabIndex = 9;
-            this.btn_Preview.Text = "Preview and Single Output";
+            this.btn_Preview.Text = "Preview or Single File Merge";
             this.btn_Preview.UseVisualStyleBackColor = true;
             this.btn_Preview.Click += new System.EventHandler(this.btn_Preview_Click);
             // 
@@ -90,11 +94,34 @@
             // 
             this.folderBrowserDialog2_unmatched.Description = "Please select a folder to store unmatched file(s)";
             // 
+            // openSampleFileDialog
+            // 
+            this.openSampleFileDialog.FileName = "openSampleFileDialog";
+            // 
+            // textBox_Suffix
+            // 
+            this.textBox_Suffix.Location = new System.Drawing.Point(283, 234);
+            this.textBox_Suffix.Name = "textBox_Suffix";
+            this.textBox_Suffix.Size = new System.Drawing.Size(100, 21);
+            this.textBox_Suffix.TabIndex = 11;
+            this.textBox_Suffix.Text = "_Alpha";
+            // 
+            // label_Suffix
+            // 
+            this.label_Suffix.AutoSize = true;
+            this.label_Suffix.Location = new System.Drawing.Point(281, 214);
+            this.label_Suffix.Name = "label_Suffix";
+            this.label_Suffix.Size = new System.Drawing.Size(113, 12);
+            this.label_Suffix.TabIndex = 12;
+            this.label_Suffix.Text = "Alpha File Suffix:";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(941, 297);
+            this.Controls.Add(this.label_Suffix);
+            this.Controls.Add(this.textBox_Suffix);
             this.Controls.Add(this.richTextBox_Console);
             this.Controls.Add(this.btn_Preview);
             this.Controls.Add(this.btn_Process);
@@ -102,8 +129,9 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
-            this.Text = "HSoD2 Texture Merge V1.1";
+            this.Text = "ETC1 Texture Merger V1.2";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -115,6 +143,9 @@
         private System.Windows.Forms.Button btn_Preview;
         private System.Windows.Forms.RichTextBox richTextBox_Console;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog2_unmatched;
+        private System.Windows.Forms.OpenFileDialog openSampleFileDialog;
+        private System.Windows.Forms.TextBox textBox_Suffix;
+        private System.Windows.Forms.Label label_Suffix;
     }
 }
 
